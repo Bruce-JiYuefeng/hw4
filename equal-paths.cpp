@@ -8,24 +8,27 @@ using namespace std;
 
 
 // You may add any prototypes of helper functions here
-bool checkEqualPaths(Node* node, int& depth, int currentDepth);
+bool checkEqualPaths(Node* node, int& leafDepth, int currentDepth);
 
 bool equalPaths(Node * root)
 {
     if (!root) return true; 
 
-    int depth = -1;
-    return checkEqualPaths(root, depth, 0);
+    int leafDepth = -1; 
+    return checkEqualPaths(root, leafDepth, 0);
 }
 
-bool checkEqualPaths(Node* node, int& depth, int currentDepth) {
-    if (!node) {
-        if (depth == -1) {
-            depth = currentDepth;
+bool checkEqualPaths(Node* node, int& leafDepth, int currentDepth) {
+    if (!node) return true; 
+
+    if (!node->left && !node->right) {
+        if (leafDepth == -1) {
+            leafDepth = currentDepth; 
             return true;
         }
-        return depth == currentDepth;
+        return leafDepth == currentDepth; 
     }
-    return checkEqualPaths(node->left, depth, currentDepth + 1) && 
-           checkEqualPaths(node->right, depth, currentDepth + 1);
+
+    return checkEqualPaths(node->left, leafDepth, currentDepth + 1) &&
+           checkEqualPaths(node->right, leafDepth, currentDepth + 1);
 }
