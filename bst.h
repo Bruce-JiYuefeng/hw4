@@ -493,26 +493,35 @@ void BinarySearchTree<Key, Value>::insert(const std::pair<const Key, Value> &key
 template<typename Key, typename Value>
 void BinarySearchTree<Key, Value>::remove(const Key& key)
 {
-    Node<Key, Value>* nodeToRemove = internalFind(key);
-    if (!nodeToRemove) return; 
+    Node<Key, Value>* target = internalFind(key);
+    if (!target) return; 
 
-    if (nodeToRemove->getLeft() && nodeToRemove->getRight()) {
-        Node<Key, Value>* pred = predecessor(nodeToRemove);
-        nodeSwap(nodeToRemove, pred);
-        nodeToRemove = pred; 
+    if (target->getLeft() && target->getRight()) {
+        Node<Key, Value>* pred = predecessor(target);
+        nodeSwap(target, pred);
+        target = pred;
     }
 
-    Node<Key, Value>* child = (nodeToRemove->getLeft() != NULL) ? nodeToRemove->getLeft() : nodeToRemove->getRight();
-    if (nodeToRemove == root_) {
-        root_ = child;
+    Node<Key, Value>* child = (target->getRight() ? target->getRight() : target->getLeft());
+    if (!child) {
+        if (target == root_) root_ = nullptr;
+        else {
+            Node<Key, Value>* parent = target->getParent();
+            if (parent->getLeft() == target) parent->setLeft(nullptr);
+            else parent->setRight(nullptr);
+        }
     } else {
-        Node<Key, Value>* parent = nodeToRemove->getParent();
-        if (parent->getLeft() == nodeToRemove) parent->setLeft(child);
-        else parent->setRight(child);
+        if (target == root_) {
+            root_ = child;
+            child->setParent(nullptr);
+        } else {
+            Node<Key, Value>* parent = target->getParent();
+            if (parent->getLeft() == target) parent->setLeft(child);
+            else parent->setRight(child);
+            child->setParent(parent);
+        }
     }
-    if (child) child->setParent(nodeToRemove->getParent());
-
-    delete nodeToRemove;
+    delete target;
 }
 
 
