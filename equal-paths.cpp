@@ -1,6 +1,6 @@
 #ifndef RECCHECK
 //if you want to add any #includes like <iostream> you must do them here (before the next endif)
-
+#include <iostream>
 #endif
 
 #include "equal-paths.h"
@@ -29,6 +29,5 @@ bool checkEqualPaths(Node* node, int& leafDepth, int currentDepth) {
         return leafDepth == currentDepth; 
     }
 
-    return checkEqualPaths(node->left, leafDepth, currentDepth + 1) &&
-           checkEqualPaths(node->right, leafDepth, currentDepth + 1);
+    return checkEqualPaths(node->left, leafDepth, currentDepth + 1) && checkEqualPaths(node->right, leafDepth, currentDepth + 1);
 }
