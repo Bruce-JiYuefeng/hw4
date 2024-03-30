@@ -166,7 +166,7 @@ void AVLTree<Key, Value>::insert(const std::pair<const Key, Value> &new_item)
         while(true){
             if (current->getKey() == node->getKey()){
                 current->setValue(new_item.second);
-                delete node; // Free the memory since we're not going to use this node
+                delete node;  
                 return;
             }
             if ((new_item.first < current->getKey()) & (current->getLeft() != NULL)){
@@ -176,7 +176,6 @@ void AVLTree<Key, Value>::insert(const std::pair<const Key, Value> &new_item)
             }else{
                 break;
             }
-            
         }
 
         if (new_item.first < current->getKey())
@@ -195,10 +194,9 @@ void AVLTree<Key, Value>::insert(const std::pair<const Key, Value> &new_item)
         }else{
             insertFix(current, node);
         }
-        
     }
-    
 }
+
 
 
 /*
