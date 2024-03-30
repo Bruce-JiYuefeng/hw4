@@ -154,7 +154,7 @@ protected:
  * overwrite the current value with the updated value.
  */
 template<class Key, class Value>
-void AVLTree<Key, Value>::insert (const std::pair<const Key, Value> &new_item)
+void AVLTree<Key, Value>::insert(const std::pair<const Key, Value> &new_item)
 {
     AVLNode<Key, Value> *node = new AVLNode<Key, Value>(new_item.first, new_item.second, NULL);
     node->setBalance(0);    
@@ -166,6 +166,7 @@ void AVLTree<Key, Value>::insert (const std::pair<const Key, Value> &new_item)
         while(true){
             if (current->getKey() == node->getKey()){
                 current->setValue(new_item.second);
+                delete node; // Free the memory since we're not going to use this node
                 return;
             }
             if ((new_item.first < current->getKey()) & (current->getLeft() != NULL)){
@@ -198,6 +199,7 @@ void AVLTree<Key, Value>::insert (const std::pair<const Key, Value> &new_item)
     }
     
 }
+
 
 /*
  * Recall: The writeup specifies that if a node has 2 children you
