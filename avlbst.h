@@ -359,80 +359,82 @@ void AVLTree<Key, Value>::removeFix(AVLNode<Key, Value>* n, int diff) {
   }
 }
 
-template<class Key, class Value>
-void AVLTree<Key, Value>::insertFix(AVLNode<Key, Value>* n, AVLNode<Key, Value>* p)
-{
-  if(p == NULL || p->getParent() == NULL) {
+template<typename K, typename V>
+void AVLTree<K, V>::insertFix(AVLNode<K, V>* node, AVLNode<K, V>* parent) {
+  if(parent == nullptr || parent->getParent() == nullptr) {
     return;
   }
-  AVLNode<Key, Value>* g = p->getParent();
-  if(g->getLeft() == p) {
-    g->updateBalance(-1);
-    if(g->getBalance() == 0) return;
-    else if (g->getBalance() == -1) {
-      insertFix(p, g);
+  AVLNode<K, V>* grandParent = parent->getParent();
+  if(grandParent->getLeft() == parent) {
+    grandParent->adjustBalance(-1);
+    if(grandParent->getBalance() == 0) return;
+    else if (grandParent->getBalance() == -1) {
+      insertFix
+    (parent, grandParent);
     }
-    else if (g->getBalance() == -2) {
-      if(n == p->getLeft()) {
-        rotateRight(g);
-        p->setBalance(0);
-        g->setBalance(0);
+    else if (grandParent->getBalance() == -2) {
+      if(node == parent->getLeft()) {
+        rotateTowardsRight(grandParent);
+        parent->resetBalance();
+        grandParent->resetBalance();
       }
-      else if (n == p->getRight()) {
-        rotateLeft(p);
-        rotateRight(g);
-        if(n->getBalance() == -1) {
-          p->setBalance(0);
-          g->setBalance(1);
+      else if (node == parent->getRight()) {
+        rotateTowardsLeft(parent);
+        rotateTowardsRight(grandParent);
+        if(node->getBalance() == -1) {
+          parent->resetBalance();
+          grandParent->setBalance(1);
         }
-        else if (n->getBalance() == 0) {
-          p->setBalance(0);
-          g->setBalance(0);
+        else if (node->getBalance() == 0) {
+          parent->resetBalance();
+          grandParent->resetBalance();
         }
-        else if (n->getBalance() == 1) {
-          p->setBalance(-1);
-          g->setBalance(0);
+        else if (node->getBalance() == 1) {
+          parent->setBalance(-1);
+          grandParent->resetBalance();
         }
-        n->setBalance(0);
+        node->resetBalance();
       }
       return;
     }
   }
-  else if (g->getRight() == p) {
-    g->updateBalance(1);
-    if(g->getBalance() == 0) {
+  else if (grandParent->getRight() == parent) {
+    grandParent->adjustBalance(1);
+    if(grandParent->getBalance() == 0) {
       return;
     }
-    else if (g->getBalance() == 1) {
-      insertFix(p,g);
+    else if (grandParent->getBalance() == 1) {
+      insertFix
+    (parent, grandParent);
     }
-    else if (g->getBalance() == 2) {
-      if (n == p->getRight()) {
-        rotateLeft(g);
-        p->setBalance(0);
-        g->setBalance(0);
+    else if (grandParent->getBalance() == 2) {
+      if (node == parent->getRight()) {
+        rotateTowardsLeft(grandParent);
+        parent->resetBalance();
+        grandParent->resetBalance();
       }
-      else if (n == p->getLeft()) {
-        rotateRight(p);
-        rotateLeft(g);
-        if(n->getBalance() == 1) {
-          p->setBalance(0);
-          g->setBalance(-1);
+      else if (node == parent->getLeft()) {
+        rotateTowardsRight(parent);
+        rotateTowardsLeft(grandParent);
+        if(node->getBalance() == 1) {
+          parent->resetBalance();
+          grandParent->setBalance(-1);
         }
-        else if (n->getBalance() == 0) {
-          p->setBalance(0);
-          g->setBalance(0);
+        else if (node->getBalance() == 0) {
+          parent->resetBalance();
+          grandParent->resetBalance();
         }
-        else if (n->getBalance() == -1) {
-          p->setBalance(1);
-          g->setBalance(0);
+        else if (node->getBalance() == -1) {
+          parent->setBalance(1);
+          grandParent->resetBalance();
         }
-        n->setBalance(0);
+        node->resetBalance();
       }
       return;
     }
   }
 }
+
 
 template<class Key, class Value>
 void AVLTree<Key, Value>::rotateLeft(AVLNode<Key, Value>* n) {
