@@ -266,7 +266,8 @@ void AVLTree<Key, Value>::removeFix(AVLNode<Key, Value>* node, int diff) {
   }
   AVLNode<Key, Value>* parentNode = node->getParent();
   int nodeDiff = -1;
-  node==parentNode->getLeft()
+  node==parentNode->getLeft();
+  
   if(parentNode != NULL && node) {
     nodeDiff = 1;
   }
