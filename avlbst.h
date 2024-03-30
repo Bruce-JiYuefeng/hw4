@@ -436,47 +436,47 @@ void AVLTree<Key, Value>::insertFix(AVLNode<Key, Value>* node, AVLNode<Key, Valu
 
 template<class Key, class Value>
 void AVLTree<Key, Value>::rotateLeft(AVLNode<Key, Value>* node) {
-  AVLNode<Key, Value>* c1 = node->getRight();
-  AVLNode<Key, Value>* c2 = c1->getLeft();
+  AVLNode<Key, Value>* nR = node->getRight();
+  AVLNode<Key, Value>* nL = nR->getLeft();
   AVLNode<Key, Value>* parentNode = node->getParent();
-  c1->setParent(parentNode);
+  nR->setParent(parentNode);
   if (parentNode == NULL) {
-    this->root_ = c1;
+    this->root_ = nR;
   }
   else if (parentNode->getLeft() == node) {
-    parentNode->setLeft(c1);
+    parentNode->setLeft(nR);
   }
   else if (parentNode->getRight() == node) {
-    parentNode->setRight(c1);
+    parentNode->setRight(nR);
   }
-  node->setParent(c1);
-  node->setRight(c2);
-  c1->setLeft(node);
-  if (c2 != NULL) {
-    c2->setParent(node);
+  node->setParent(nR);
+  node->setRight(nL);
+  nR->setLeft(node);
+  if (nL != NULL) {
+    nL->setParent(node);
   }
 }
 
 template<class Key, class Value>
 void AVLTree<Key, Value>::rotateRight(AVLNode<Key, Value>* n) {
-  AVLNode<Key, Value>* c1 = n->getLeft();
-  AVLNode<Key, Value>* c2 = c1->getRight();
+  AVLNode<Key, Value>* nR = n->getLeft();
+  AVLNode<Key, Value>* nL = nR->getRight();
   AVLNode<Key, Value>* parentNode = n->getParent();
-  c1->setParent(parentNode);
+  nR->setParent(parentNode);
   if (parentNode == NULL) {
-    this->root_ = c1;
+    this->root_ = nR;
   }
   else if (parentNode->getLeft() == n) {
-    parentNode->setLeft(c1);
+    parentNode->setLeft(nR);
   }
   else if (parentNode->getRight() == n) {
-    parentNode->setRight(c1);
+    parentNode->setRight(nR);
   }
-  n->setParent(c1);
-  n->setLeft(c2);
-  c1->setRight(n);
-  if (c2 != NULL) {
-    c2->setParent(n);
+  n->setParent(nR);
+  n->setLeft(nL);
+  nR->setRight(n);
+  if (nL != NULL) {
+    nL->setParent(n);
   }
 }
 
