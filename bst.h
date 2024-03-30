@@ -274,9 +274,9 @@ BinarySearchTree<Key, Value>::iterator::iterator(Node<Key,Value> *ptr): current_
 * A default constructor that initializes the iterator to NULL.
 */
 template<class Key, class Value>
-BinarySearchTree<Key, Value>::iterator::iterator() : current_(NULL)
+BinarySearchTree<Key, Value>::iterator::iterator()
 {
-    // TODO
+    this->current_ = ptr;
 
 }
 
@@ -367,9 +367,9 @@ Begin implementations for the BinarySearchTree class.
 * Default constructor for a BinarySearchTree, which sets the root to NULL.
 */
 template<class Key, class Value>
-BinarySearchTree<Key, Value>::BinarySearchTree()  : root_(NULL) 
+BinarySearchTree<Key, Value>::BinarySearchTree()  : 
 {
-    // TODO
+    this->root_ = (NULL);
 }
 
 template<typename Key, typename Value>
@@ -465,6 +465,7 @@ void BinarySearchTree<Key, Value>::insert(const std::pair<const Key, Value> &key
 
     Node<Key, Value>* current = root_;
     Node<Key, Value>* parent = NULL;
+    
     while (current != NULL) {
         parent = current;
         if (keyValuePair.first < current->getKey()) {
