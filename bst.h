@@ -276,7 +276,7 @@ BinarySearchTree<Key, Value>::iterator::iterator(Node<Key,Value> *ptr): current_
 template<class Key, class Value>
 BinarySearchTree<Key, Value>::iterator::iterator()
 {
-    this->current_ = ptr;
+    current_ = NULL;
 
 }
 
