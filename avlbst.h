@@ -359,12 +359,12 @@ void AVLTree<Key, Value>::removeFix(AVLNode<Key, Value>* n, int diff) {
   }
 }
 
-template<typename K, typename V>
-void AVLTree<K, V>::insertFix(AVLNode<K, V>* node, AVLNode<K, V>* parent) {
+template<typename Key, typename Value>
+void AVLTree<Key, Value>::insertFix(AVLNode<Key, Value>* node, AVLNode<Key, Value>* parent) {
   if(parent == nullptr || parent->getParent() == nullptr) {
     return;
   }
-  AVLNode<K, V>* grandParent = parent->getParent();
+  AVLNode<Key, Value>* grandParent = parent->getParent();
   if(grandParent->getLeft() == parent) {
     grandParent->adjustBalance(-1);
     if(grandParent->getBalance() == 0) return;
@@ -375,25 +375,25 @@ void AVLTree<K, V>::insertFix(AVLNode<K, V>* node, AVLNode<K, V>* parent) {
     else if (grandParent->getBalance() == -2) {
       if(node == parent->getLeft()) {
         rotateTowardsRight(grandParent);
-        parent->resetBalance();
-        grandParent->resetBalance();
+        parent->setBalance();
+        grandParent->setBalance();
       }
       else if (node == parent->getRight()) {
         rotateTowardsLeft(parent);
         rotateTowardsRight(grandParent);
         if(node->getBalance() == -1) {
-          parent->resetBalance();
+          parent->setBalance();
           grandParent->setBalance(1);
         }
         else if (node->getBalance() == 0) {
-          parent->resetBalance();
-          grandParent->resetBalance();
+          parent->setBalance();
+          grandParent->setBalance();
         }
         else if (node->getBalance() == 1) {
           parent->setBalance(-1);
-          grandParent->resetBalance();
+          grandParent->setBalance();
         }
-        node->resetBalance();
+        node->setBalance();
       }
       return;
     }
@@ -410,25 +410,25 @@ void AVLTree<K, V>::insertFix(AVLNode<K, V>* node, AVLNode<K, V>* parent) {
     else if (grandParent->getBalance() == 2) {
       if (node == parent->getRight()) {
         rotateTowardsLeft(grandParent);
-        parent->resetBalance();
-        grandParent->resetBalance();
+        parent->setBalance();
+        grandParent->setBalance();
       }
       else if (node == parent->getLeft()) {
         rotateTowardsRight(parent);
         rotateTowardsLeft(grandParent);
         if(node->getBalance() == 1) {
-          parent->resetBalance();
+          parent->setBalance();
           grandParent->setBalance(-1);
         }
         else if (node->getBalance() == 0) {
-          parent->resetBalance();
-          grandParent->resetBalance();
+          parent->setBalance();
+          grandParent->setBalance();
         }
         else if (node->getBalance() == -1) {
           parent->setBalance(1);
-          grandParent->resetBalance();
+          grandParent->setBalance();
         }
-        node->resetBalance();
+        node->setBalance();
       }
       return;
     }
