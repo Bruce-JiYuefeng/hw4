@@ -281,7 +281,7 @@ void AVLTree<K, V>::insertFix(AVLNode<K, V> *parent, AVLNode<K, V> *newNode) {
         }
     }
     else {
-        grandParent->incrementBalance();
+        grandParent->updateBalance();
         if (grandParent->getBalance() == 0)
             return;
         if (grandParent->getBalance() == 1)
