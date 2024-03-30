@@ -194,7 +194,7 @@ void AVLTree<Key, Value>::insert(const std::pair<const Key, Value> &new_item)
         insertFix(current, node);
     }
 }
-delete note;
+delete node;
 }
 
 
