@@ -184,7 +184,6 @@ void AVLTree<Key, Value>::insert(const std::pair<const Key, Value> &new_item)
                     newNode->setBalance(0);
                     current->setRight(newNode);
                     insertFix(current, newNode); 
-                    delete newNode;
                     return;
                 }
             }
