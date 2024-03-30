@@ -260,65 +260,101 @@ void AVLTree<Key, Value>::remove(const Key& key) {
 
 
 template<class Key, class Value>
-void AVLTree<Key, Value>::removeFix(AVLNode<Key, Value>* currentNode, int balanceAdjustment) {
-  if (currentNode == nullptr) return;
-
-  AVLNode<Key, Value>* parentNode = currentNode->getParent();
-  int parentAdjustment = (parentNode != nullptr && currentNode == parentNode->getLeft()) ? 1 : -1;
-
-  // Common function to handle rotations and rebalancing
-  auto handleRotation = [&](AVLNode<Key, Value>* childNode, int childBalanceCondition, auto rotationFunc, bool doubleRotation = false, AVLNode<Key, Value>* grandChildNode = nullptr) {
-    if (childNode->getBalance() == childBalanceCondition) {
-      rotationFunc(currentNode);
-      int zeroBalance = 0;
-      currentNode->setBalance(zeroBalance);
-      childNode->setBalance(zeroBalance);
-      if (!doubleRotation) removeFix(parentNode, parentAdjustment);
-    } else if (doubleRotation && grandChildNode) {
-      int childNewBalance = 0, currentNodeNewBalance = 0;
-      rotationFunc(childNode);
-      rotationFunc(currentNode);
-      switch (grandChildNode->getBalance()) {
-        case 1: currentNodeNewBalance = 0; childNewBalance = -1; break;
-        case -1: currentNodeNewBalance = 1; childNewBalance = 0; break;
-        default: currentNodeNewBalance = childNewBalance = 0;
+void AVLTree<Key, Value>::removeFix(AVLNode<Key, Value>* node, int difference) {
+  if (node == NULL) {
+    return;
+  }
+  AVLNode<Key, Value>* parent = node->getParent();
+  int parentDiff = -1;
+  if(parent != NULL && node == parent->getLeft()) {
+    parentDiff = 1;
+  }
+  if(difference == -1) {
+    if(node->getBalance() - difference == -2) {
+      AVLNode<Key, Value>* leftChild = node->getLeft();
+      if(leftChild->getBalance() == -1) {
+        rotateRight(node);
+        node->setBalance(0);
+        leftChild->setBalance(0);
+        removeFix(parent, parentDiff);
       }
-      currentNode->setBalance(currentNodeNewBalance);
-      childNode->setBalance(childNewBalance);
-      grandChildNode->setBalance(0);
-      removeFix(parentNode, parentAdjustment);
-    } else {
-      int adjustment = (childBalanceCondition == -1) ? 1 : -1;
-      rotationFunc(currentNode);
-      currentNode->setBalance(adjustment);
-      childNode->setBalance(-adjustment);
+      else if (leftChild->getBalance() == 0) {
+        rotateRight(node);
+        node->setBalance(-1);
+        leftChild->setBalance(1);
+        return;
+      }
+      else if (leftChild->getBalance() == 1){
+        AVLNode<Key, Value>* temp = leftChild->getRight();
+        rotateLeft(leftChild);
+        rotateRight(node);
+        if(temp->getBalance() == 1) {
+          node->setBalance(0);
+          leftChild->setBalance(-1);
+        }
+        else if (temp->getBalance() == 0) {
+          node->setBalance(0);
+          leftChild->setBalance(0);
+        }
+        else if (temp->getBalance() == -1) {
+          node->setBalance(1);
+          leftChild->setBalance(0);
+        }
+        temp->setBalance(0);
+        removeFix(parent, parentDiff);
+      }
     }
-  };
-
-  int newBalance = currentNode->getBalance() + balanceAdjustment;
-  if (balanceAdjustment == -1) {
-    AVLNode<Key, Value>* leftChild = currentNode->getLeft();
-    if (newBalance == -2) {
-      if (leftChild->getBalance() == 1) {
-        handleRotation(leftChild, 1, [&](AVLNode<Key, Value>* node) { rotateLeft(leftChild); rotateRight(node); }, true, leftChild->getRight());
-      } else {
-        handleRotation(leftChild, leftChild->getBalance(), [&](AVLNode<Key, Value>* node) { rotateRight(node); });
-      }
-    } else {
-      currentNode->setBalance(newBalance);
-      if (newBalance != -1) removeFix(parentNode, parentAdjustment);
+    else if (node->getBalance() - difference == -1) {
+      node->setBalance(-1);
+      return;
     }
-  } else if (balanceAdjustment == 1) {
-    AVLNode<Key, Value>* rightChild = currentNode->getRight();
-    if (newBalance == 2) {
-      if (rightChild->getBalance() == -1) {
-        handleRotation(rightChild, -1, [&](AVLNode<Key, Value>* node) { rotateRight(rightChild); rotateLeft(node); }, true, rightChild->getLeft());
-      } else {
-        handleRotation(rightChild, rightChild->getBalance(), [&](AVLNode<Key, Value>* node) { rotateLeft(node); });
+    else if (node->getBalance() - difference == 0) {
+      node->setBalance(0);
+      removeFix(parent, parentDiff);
+    }
+  }
+  else if (difference == 1) {
+    if (node->getBalance() - difference == 2) {
+      AVLNode<Key, Value>* rightChild = node->getRight();
+      if(rightChild->getBalance() == 1) {
+        rotateLeft(node);
+        node->setBalance(0);
+        rightChild->setBalance(0);
+        removeFix(parent, parentDiff);
       }
-    } else {
-      currentNode->setBalance(newBalance);
-      if (newBalance != 1) removeFix(parentNode, parentAdjustment);
+      else if (rightChild->getBalance() == 0) {
+        rotateLeft(node);
+        node->setBalance(1);
+        rightChild->setBalance(-1);
+        return;
+      }
+      else if (rightChild->getBalance() == -1) {
+        AVLNode<Key, Value>* temp = rightChild->getLeft();
+        rotateRight(rightChild);
+        rotateLeft(node);
+        if(temp->getBalance() == -1) {
+          node->setBalance(0);
+          rightChild->setBalance(1);
+        }
+        else if (temp->getBalance() == 0) {
+          node->setBalance(0);
+          rightChild->setBalance(0);
+        }
+        else if (temp->getBalance() == 1) {
+          node->setBalance(-1);
+          rightChild->setBalance(0);
+        }
+        temp->setBalance(0);
+        removeFix(parent, parentDiff);
+      }
+    }
+    else if(node->getBalance() - difference == 1) {
+      node->setBalance(1);
+      return;
+    }
+    else if (node->getBalance() - difference == 0) {
+      node->setBalance(0);
+      removeFix(parent, parentDiff);
     }
   }
 }
