@@ -146,7 +146,8 @@ protected:
     void fixDoubleRightImbalance(AVLNode<Key, Value> *node, AVLNode<Key, Value> *child, AVLNode<Key, Value> *parent, int newDiff);
     void fixRightImbalance(AVLNode<Key, Value> *node, AVLNode<Key, Value> *parent, int newDiff);
     void fixDoubleLeftImbalance(AVLNode<Key, Value> *node, AVLNode<Key, Value> *child, AVLNode<Key, Value> *parent, int newDiff);
-    void rotateLeftRight(AVLNode<Key, Value> *node)
+    void rotateRightLeft(AVLNode<Key, Value> *node);
+    void rotateLeftRight(AVLNode<Key, Value> *node);
 };
 
 /*
@@ -189,20 +190,20 @@ void AVLTree<Key, Value>::insert(const std::pair<const Key, Value> &new_item)
         }
 
         while (current != nullptr) {
-            if (current->getLeftHeight() - current->getRightHeight() == 2) {
+            if (current->getLeft() - current->getRight() == 2) { 
                 if (new_item.first < current->getLeft()->getKey()) {
                     rotateRight(current);
                 } else {
                     rotateLeftRight(current);
                 }
                 break;
-            } else if (current->getRightHeight() - current->getLeftHeight() == 2) {
+            } else if (current->getRight() - current->getLeft() == 2) { 
                 if (new_item.first > current->getRight()->getKey()) {
                     rotateLeft(current);
                 } else {
                     rotateRightLeft(current);
                 }
-                break; 
+                 break; 
             }
 
             current = current->getParent(); 
