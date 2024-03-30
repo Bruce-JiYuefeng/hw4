@@ -137,9 +137,9 @@ protected:
     virtual void nodeSwap( AVLNode<Key,Value>* n1, AVLNode<Key,Value>* n2);
 
     // Add helper functions here
-    void rotateLeft(AVLNode<Key, Value>* n);
-    void rotateRight(AVLNode<Key, Value>* n);
-    void insertFix(AVLNode<Key, Value>* n, AVLNode<Key, Value>* p);
+    void rotateLeft(AVLNode<Key, Value>* node);
+    void rotateRight(AVLNode<Key, Value>* node);
+    void insertFix(AVLNode<Key, Value>* node, AVLNode<Key, Value>* p);
     void removeFix(AVLNode<Key, Value>* n, int diff);
     void insertLeft(const std::pair<const Key, Value> &new_item, AVLNode<Key, Value> *parent);
     void insertRight(const std::pair<const Key, Value> &new_item, AVLNode<Key, Value> *parent);
@@ -458,25 +458,25 @@ void AVLTree<Key, Value>::rotateLeft(AVLNode<Key, Value>* node) {
 }
 
 template<class Key, class Value>
-void AVLTree<Key, Value>::rotateRight(AVLNode<Key, Value>* n) {
-  AVLNode<Key, Value>* nR = n->getLeft();
+void AVLTree<Key, Value>::rotateRight(AVLNode<Key, Value>* node) {
+  AVLNode<Key, Value>* nR = node->getLeft();
   AVLNode<Key, Value>* nL = nR->getRight();
-  AVLNode<Key, Value>* parentNode = n->getParent();
+  AVLNode<Key, Value>* parentNode = node->getParent();
   nR->setParent(parentNode);
   if (parentNode == NULL) {
     this->root_ = nR;
   }
-  else if (parentNode->getLeft() == n) {
+  else if (parentNode->getLeft() == node) {
     parentNode->setLeft(nR);
   }
-  else if (parentNode->getRight() == n) {
+  else if (parentNode->getRight() == node) {
     parentNode->setRight(nR);
   }
-  n->setParent(nR);
-  n->setLeft(nL);
-  nR->setRight(n);
+  node->setParent(nR);
+  node->setLeft(nL);
+  nR->setRight(node);
   if (nL != NULL) {
-    nL->setParent(n);
+    nL->setParent(node);
   }
 }
 
