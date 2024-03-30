@@ -193,7 +193,7 @@ void AVLTree<Key, Value>::insert (const std::pair<const Key, Value> &new_item)
     }
 
     // Fix AVL tree balance if needed.
-    insertFix(parent);
+    insertFix(parent, newNode);
 }
 
 /*
