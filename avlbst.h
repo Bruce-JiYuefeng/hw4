@@ -139,6 +139,8 @@ protected:
     // Add helper functions here
     void rotateLeft(AVLNode<Key, Value> *n);
     void rotateRight(AVLNode<Key, Value> *n);
+    void insertFix(AVLNode<Key, Value> *p, AVLNode<Key, Value> *n);
+    void removeFix(AVLNode<Key, Value> *n, int diff);
 
 };
 
