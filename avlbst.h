@@ -149,52 +149,146 @@ protected:
  * Recall: If key is already in the tree, you should 
  * overwrite the current value with the updated value.
  */
-template<class Key, class Value>
-void AVLTree<Key, Value>::insert (const std::pair<const Key, Value> &new_item)
+template <class Key, class Value>
+void AVLTree<Key, Value>::insert(const std::pair<const Key, Value> &new_item)
 {
     Key key = new_item.first;
-    Value value = new_item.second;
-    
-    // If tree is empty, create root and return.
-    if (!this->root_) {
-        this->root_ = new AVLNode<Key, Value>(key, value, nullptr);
+    Value val = new_item.second;
+    AVLNode<Key, Value> *node = new AVLNode<Key, Value>(key, val, NULL);
+    if (this->root_ == NULL)
+    {
+        this->root_ = static_cast<Node<Key, Value> *>(node);
         return;
     }
-
-    // Traverse the tree to find the insertion point.
-    AVLNode<Key, Value> *parent = static_cast<AVLNode<Key, Value> *>(this->root_);
-    while (true) {
-        // If key already exists, update value and return.
-        if (key == parent->getKey()) {
-            parent->setValue(value);
+    AVLNode<Key, Value> *p = static_cast<AVLNode<Key, Value> *>(this->root_);
+    while (true)
+    {
+        if (p->getKey() == key)
+        {
+            p->setValue(val);
             return;
         }
-        
-        // Navigate left or right based on key comparison.
-        if (key < parent->getKey()) {
-            if (parent->getLeft()) {
-                parent = parent->getLeft();
-            } else {
-                // Found insertion point on the left.
-                AVLNode<Key, Value> *newNode = new AVLNode<Key, Value>(key, value, parent);
-                parent->setLeft(newNode);
-                break;
+        if ((key < p->getKey()) & (p->getLeft() != NULL))
+            p = p->getLeft();
+        else if ((key > p->getKey()) & (p->getRight() != NULL))
+            p = p->getRight();
+        else
+            break;
+    }
+    // now curr is the parent of the node to be insert
+    if (key < p->getKey())
+    {
+        node->setParent(p);
+        p->setLeft(node);
+    }
+    else
+    {
+        node->setParent(p);
+        p->setRight(node);
+    }
+    node->setBalance(0);
+    if (p->getBalance() != 0)
+        p->setBalance(0);
+    else
+    {
+        if (p->getLeft() == node)
+            p->updateBalance(-1);
+        else
+            p->updateBalance(1);
+        insertFix(p, node);
+    }
+}
+
+template <class Key, class Value>
+void AVLTree<Key, Value>::insertFix(AVLNode<Key, Value> *p, AVLNode<Key, Value> *n)
+{
+    if (p == NULL || p->getParent() == NULL)
+        return;
+    AVLNode<Key, Value> *g = p->getParent();
+    if (g->getLeft() == p)
+    {
+        g->updateBalance(-1);
+        if (g->getBalance() == 0)
+            return;
+        if (g->getBalance() == -1)
+            insertFix(g, p);
+        else
+        {
+            if (p->getLeft() == n)
+            {
+                rotateRight(g);
+                p->setBalance(0);
+                g->setBalance(0);
             }
-        } else {
-            if (parent->getRight()) {
-                parent = parent->getRight();
-            } else {
-                // Found insertion point on the right.
-                AVLNode<Key, Value> *newNode = new AVLNode<Key, Value>(key, value, parent);
-                parent->setRight(newNode);
-                break;
+            else
+            {
+                rotateLeft(p);
+                rotateRight(g);
+
+                if (n->getBalance() == -1)
+                {
+                    p->setBalance(0);
+                    g->setBalance(1);
+                    n->setBalance(0);
+                }
+                else if (n->getBalance() == 0)
+                {
+                    p->setBalance(0);
+                    g->setBalance(0);
+                    n->setBalance(0);
+                }
+                else
+                {
+                    p->setBalance(-1);
+                    g->setBalance(0);
+                    n->setBalance(0);
+                }
             }
         }
     }
+    else
+    {
+        g->updateBalance(1);
+        if (g->getBalance() == 0)
+            return;
+        if (g->getBalance() == 1)
+            insertFix(g, p);
+        else
+        {
+            if (p->getRight() == n)
+            {
+                rotateLeft(g);
+                p->setBalance(0);
+                g->setBalance(0);
+            }
+            else
+            {
+                rotateRight(p);
+                rotateLeft(g);
 
-    // Fix AVL tree balance if needed.
-    insertFix(parent, newNode);
+                if (n->getBalance() == 1)
+                {
+                    p->setBalance(0);
+                    g->setBalance(-1);
+                    n->setBalance(0);
+                }
+                else if (n->getBalance() == 0)
+                {
+                    p->setBalance(0);
+                    g->setBalance(0);
+                    n->setBalance(0);
+                }
+                else
+                {
+                    p->setBalance(1);
+                    g->setBalance(0);
+                    n->setBalance(0);
+                }
+            }
+        }
+    }
 }
+
 
 /*
  * Recall: The writeup specifies that if a node has 2 children you
