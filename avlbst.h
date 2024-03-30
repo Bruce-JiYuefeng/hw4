@@ -156,46 +156,41 @@ protected:
 template<class Key, class Value>
 void AVLTree<Key, Value>::insert(const std::pair<const Key, Value> &new_item)
 {
-    AVLNode<Key, Value> *node = new AVLNode<Key, Value>(new_item.first, new_item.second, NULL);
-    node->setBalance(0);    
-
     if (this->root_ == NULL){
-        this->root_ = node;
-    }else{
+        this->root_ = new AVLNode<Key, Value>(new_item.first, new_item.second, NULL);
+        static_cast<AVLNode<Key, Value>*>(this->root_)->setBalance(0);
+    } else {
         AVLNode<Key, Value>* current = static_cast<AVLNode<Key, Value>*>(this->root_);
-        while(true){
-            if (current->getKey() == node->getKey()){
+        while (true) {
+            if (current->getKey() == new_item.first) {
                 current->setValue(new_item.second);
-                delete node;  
-                return;
+                return; 
             }
-            if ((new_item.first < current->getKey()) & (current->getLeft() != NULL)){
-                current = current->getLeft();
-            }else if ((new_item.first > current->getKey()) & (current->getRight() != NULL)){
-                current = current->getRight();
-            }else{
-                break;
+            if (new_item.first < current->getKey()) {
+                if (current->getLeft() != NULL) {
+                    current = current->getLeft();
+                } else {
+                    AVLNode<Key, Value>* newNode = new AVLNode<Key, Value>(new_item.first, new_item.second, current);
+                    newNode->setBalance(0);
+                    current->setLeft(newNode);
+                    insertFix(current, newNode); 
+                    return;
+                }
+            } else {
+                if (current->getRight() != NULL) {
+                    current = current->getRight();
+                } else {
+                    AVLNode<Key, Value>* newNode = new AVLNode<Key, Value>(new_item.first, new_item.second, current);
+                    newNode->setBalance(0);
+                    current->setRight(newNode);
+                    insertFix(current, newNode); 
+                    return;
+                }
             }
-        }
-
-        if (new_item.first < current->getKey())
-        {
-            node->setParent(current);
-            current->setLeft(node);
-        }else{
-            node->setParent(current);
-            current->setRight(node);
-        }
-        
-        node->setBalance(0);
-        
-        if (current->getBalance() != 0){
-            current->setBalance(0);
-        }else{
-            insertFix(current, node);
         }
     }
 }
+
 
 
 
