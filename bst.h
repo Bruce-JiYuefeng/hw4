@@ -367,7 +367,7 @@ Begin implementations for the BinarySearchTree class.
 * Default constructor for a BinarySearchTree, which sets the root to NULL.
 */
 template<class Key, class Value>
-BinarySearchTree<Key, Value>::BinarySearchTree()  : 
+BinarySearchTree<Key, Value>::BinarySearchTree()
 {
     this->root_ = (NULL);
 }
@@ -465,7 +465,7 @@ void BinarySearchTree<Key, Value>::insert(const std::pair<const Key, Value> &key
 
     Node<Key, Value>* current = root_;
     Node<Key, Value>* parent = NULL;
-    
+
     while (current != NULL) {
         parent = current;
         if (keyValuePair.first < current->getKey()) {
@@ -492,36 +492,37 @@ void BinarySearchTree<Key, Value>::insert(const std::pair<const Key, Value> &key
 * should swap with the predecessor and then remove.
 */
 template<typename Key, typename Value>
-void BinarySearchTree<Key, Value>::remove(const Key& key)
+void BinarySearchTree<Key, Value>::remove(const Key& key) 
 {
     Node<Key, Value>* target = internalFind(key);
     if (!target) return; 
 
+
     if (target->getLeft() && target->getRight()) {
         Node<Key, Value>* pred = predecessor(target);
         nodeSwap(target, pred);
-        target = pred;
+
     }
 
-    Node<Key, Value>* child = (target->getRight() ? target->getRight() : target->getLeft());
-    if (!child) {
-        if (target == root_) root_ = nullptr;
-        else {
-            Node<Key, Value>* parent = target->getParent();
-            if (parent->getLeft() == target) parent->setLeft(nullptr);
-            else parent->setRight(nullptr);
+    Node<Key, Value>* child = target->getLeft() ? target->getLeft() : target->getRight();
+
+    if (target == root_) {
+        root_ = child; 
+        if (child != nullptr) {
+            child->setParent(nullptr);
         }
     } else {
-        if (target == root_) {
-            root_ = child;
-            child->setParent(nullptr);
+        Node<Key, Value>* parent = target->getParent();
+        if (parent->getLeft() == target) {
+            parent->setLeft(child);
         } else {
-            Node<Key, Value>* parent = target->getParent();
-            if (parent->getLeft() == target) parent->setLeft(child);
-            else parent->setRight(child);
+            parent->setRight(child);
+        }
+        if (child != nullptr) {
             child->setParent(parent);
         }
     }
+
     delete target;
 }
 
@@ -532,7 +533,7 @@ Node<Key, Value>*
 BinarySearchTree<Key, Value>::predecessor(Node<Key, Value>* current)
 {
     if (!current) return NULL;
-    if (current->getLeft()) {
+    if (current->getLeft() != NULL) {
         current = current->getLeft();
         while (current->getRight()) {
             current = current->getRight();
