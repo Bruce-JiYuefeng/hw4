@@ -395,50 +395,52 @@ void AVLTree<Key, Value>::fixDoubleLeftImbalance(AVLNode<Key, Value> *node, AVLN
 }
 
 template <class Key, class Value>
-void AVLTree<Key, Value>::rotateLeft(AVLNode<Key, Value> *n)
-{
-    AVLNode<Key, Value> *c = n->getRight(); 
-    AVLNode<Key, Value> *gc = c->getLeft(); 
-
-    n->setRight(gc);
-    if (gc) gc->setParent(n);
-
-    c->setLeft(n);
-    AVLNode<Key, Value> *oldParent = n->getParent();
-    n->setParent(c);
-
-    if (oldParent) {
-        if (oldParent->getLeft() == n) oldParent->setLeft(c);
-        else oldParent->setRight(c);
+void AVLTree<Key, Value>::rotateLeft(AVLNode<Key, Value> *node) {
+    AVLNode<Key, Value> *parentNode = node->getParent();
+    AVLNode<Key, Value> *childNode = node->getRight();
+    AVLNode<Key, Value> *grandChildNode = childNode->getLeft();
+    
+    if (parentNode == nullptr) {
+        this->root_ = childNode;
+        childNode->setParent(nullptr);
     } else {
-        this->root_ = c;
+        if (parentNode->getLeft() == node)
+            parentNode->setLeft(childNode);
+        else
+            parentNode->setRight(childNode);
+        childNode->setParent(parentNode);
     }
-    c->setParent(oldParent);
+    
+    childNode->setLeft(node);
+    node->setParent(childNode);
+    node->setRight(grandChildNode);
+    if (grandChildNode != nullptr)
+        grandChildNode->setParent(node);
 }
-
 
 template <class Key, class Value>
-void AVLTree<Key, Value>::rotateRight(AVLNode<Key, Value> *n)
-{
-    AVLNode<Key, Value> *c = n->getLeft(); // Child
-    AVLNode<Key, Value> *gc = c->getRight(); // Grandchild
-
-    n->setLeft(gc);
-    if (gc) gc->setParent(n);
-
-    c->setRight(n);
-    AVLNode<Key, Value> *oldParent = n->getParent();
-    n->setParent(c);
-
-    if (oldParent) {
-        if (oldParent->getLeft() == n) oldParent->setLeft(c);
-        else oldParent->setRight(c);
+void AVLTree<Key, Value>::rotateRight(AVLNode<Key, Value> *node) {
+    AVLNode<Key, Value> *parentNode = node->getParent();
+    AVLNode<Key, Value> *childNode = node->getLeft();
+    AVLNode<Key, Value> *grandChildNode = childNode->getRight();
+    
+    if (parentNode == nullptr) {
+        this->root_ = childNode;
+        childNode->setParent(nullptr);
     } else {
-        this->root_ = c;
+        if (parentNode->getLeft() == node)
+            parentNode->setLeft(childNode);
+        else
+            parentNode->setRight(childNode);
+        childNode->setParent(parentNode);
     }
-    c->setParent(oldParent);
+    
+    childNode->setRight(node);
+    node->setParent(childNode);
+    node->setLeft(grandChildNode);
+    if (grandChildNode != nullptr)
+        grandChildNode->setParent(node);
 }
-
 
 
 #endif
